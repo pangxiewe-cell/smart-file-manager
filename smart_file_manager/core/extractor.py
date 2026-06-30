@@ -6,7 +6,7 @@ from pathlib import Path
 import config
 
 
-MAX_CHARS = config.LLM_MAX_TEXT_CHARS
+MAX_CHARS = getattr(config, "MAX_EXTRACT_CHARS", 3000)
 
 
 def extract_text(path: str) -> str:

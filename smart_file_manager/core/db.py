@@ -191,8 +191,11 @@ def upsert_file(conn: sqlite3.Connection, path: str) -> int | None:
                 "INSERT INTO files_fts(rowid, file_name, full_path) VALUES (?, ?, ?)",
                 (file_id, info["file_name"], info["full_path"])
             )
-        except Exception:
-            pass
+        except Exception as e:
+            import logging
+            logging.getLogger("smart_fm.db").warning(
+                "FTS5 sync failed for file_id=%d: %s", file_id, e
+            )
     return file_id
 
 

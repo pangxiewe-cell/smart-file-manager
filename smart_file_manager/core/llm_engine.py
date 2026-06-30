@@ -3,7 +3,9 @@ LLM 标注引擎
 负责调用 OpenAI API（或本地 Ollama）对文件内容进行智能标注，
 返回：内容摘要、建议归档路径、重要性评分、清理优先级。
 """
+import asyncio
 import json
+import logging
 import os
 import config
 from openai import AsyncOpenAI, APIError

@@ -124,11 +124,10 @@ def _do_move(conn, task, src: str, dst: str) -> dict:
     if not os.path.exists(src):
         return {"status": "error", "message": "源文件不存在"}
     shutil.move(src, str(dst_path))
-    # 更新数据库路径
+    # 更新数据库路径（复用外层连接，避免锁冲突）
     import core.db as db_mod
     new_path = str(dst_path.resolve())
-    with get_conn() as conn2:
-        db_mod.upsert_file(conn2, new_path)
+    db_mod.upsert_file(conn, new_path)
     conn.execute(
         "INSERT INTO action_logs (file_id, action_type, details, undo_path) VALUES (?,?,?,?)",
         (task["file_id"], "MOVE", json.dumps({"from": src, "to": dst}, ensure_ascii=False), src)
